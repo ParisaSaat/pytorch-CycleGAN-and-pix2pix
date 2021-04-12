@@ -34,11 +34,10 @@ def align_images(a_file_paths, b_file_paths, target_path):
 def get_synced_data_paths(original_path, masked_path):
     original_file_paths = get_file_paths(original_path)
     masked_file_paths = get_file_paths(masked_path)
-    for masked_sample_file_name in masked_file_paths:
-        masked_sample_idx = masked_sample_file_name.split('_')[0]
-        original_sample_file_name = masked_sample_idx + '.png'
-        if original_sample_file_name not in original_file_paths:
-            masked_file_paths.remove(masked_sample_file_name)
+    for original_sample_file_name in original_file_paths:
+        original_sample_idx = original_sample_file_name.split('.')[0]
+        masked_sample_file_name = original_sample_idx + '_Mask.jpg'
+        if masked_sample_file_name not in masked_file_paths:
             original_file_paths.remove(original_sample_file_name)
     return original_file_paths, masked_file_paths
 
