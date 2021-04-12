@@ -35,8 +35,8 @@ def get_synced_data_paths(original_path, masked_path):
     original_file_paths = get_file_paths(original_path)
     masked_file_paths = get_file_paths(masked_path)
     for original_sample_file_name in original_file_paths:
-        original_sample_idx = original_sample_file_name.split('.')[0]
-        masked_sample_file_name = original_sample_idx + '_Mask.jpg'
+        sample_idx = original_sample_file_name.split('.')[-2]
+        masked_sample_file_name = os.path.join(masked_path, sample_idx + '_Mask.jpg')
         if masked_sample_file_name not in masked_file_paths:
             original_file_paths.remove(original_sample_file_name)
     return original_file_paths, masked_file_paths
