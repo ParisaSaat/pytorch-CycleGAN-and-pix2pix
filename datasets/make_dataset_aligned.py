@@ -24,31 +24,33 @@ def align_images(a_file_paths, b_file_paths, target_path):
     for i in range(len(a_file_paths)):
         img_a = Image.open(a_file_paths[i])
         img_b = Image.open(b_file_paths[i])
-        assert(img_a.size == img_b.size)
+        assert (img_a.size == img_b.size)
 
         aligned_image = Image.new("RGB", (img_a.size[0] * 2, img_a.size[1]))
         aligned_image.paste(img_a, (0, 0))
         aligned_image.paste(img_b, (img_a.size[0], 0))
         aligned_image.save(os.path.join(target_path, '{:04d}.jpg'.format(i)))
 
+
 def get_synced_data_paths(original_path, masked_path):
     original_file_paths = get_file_paths(original_path)
     masked_file_paths = get_file_paths(masked_path)
+    source_file_paths = []
+    target_file_paths = []
     for original_sample_file_name in original_file_paths:
         sample_idx = original_sample_file_name.split('.')[0].split('/')[-1]
         masked_sample_file_name = os.path.join(masked_path, sample_idx + '_Mask.jpg')
-        if masked_sample_file_name not in masked_file_paths:
+        if masked_sample_file_name in masked_file_paths:
+            target_file_paths.append(masked_sample_file_name)
+            source_file_paths.append(original_sample_file_name)
+        else:
             original_file_paths.remove(original_sample_file_name)
-    for masked_sample_file_name in masked_file_paths:
-        sample_idx = masked_sample_file_name.split('.')[0].split('/')[-1].split('_')[0]
-        original_sample_file_name = os.path.join(original_path, sample_idx + '.png')
-        if original_sample_file_name not in original_file_paths:
-            masked_file_paths.remove(masked_sample_file_name)
+    return source_file_paths, target_file_paths
 
-    return original_file_paths, masked_file_paths
 
 if __name__ == '__main__':
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--dataset-path',
@@ -64,14 +66,14 @@ if __name__ == '__main__':
     test_b_path = os.path.join(dataset_folder, 'testB')
     test_a_file_paths, test_b_file_paths = get_synced_data_paths(test_a_path, test_b_path)
 
-    assert(len(test_a_file_paths) == len(test_b_file_paths))
+    assert (len(test_a_file_paths) == len(test_b_file_paths))
     test_path = os.path.join(dataset_folder, 'test')
 
     train_a_path = os.path.join(dataset_folder, 'trainA')
     train_b_path = os.path.join(dataset_folder, 'trainB')
     train_a_file_paths, train_b_file_paths = get_synced_data_paths(train_a_path, train_b_path)
 
-    assert(len(train_a_file_paths) == len(train_b_file_paths))
+    assert (len(train_a_file_paths) == len(train_b_file_paths))
     train_path = os.path.join(dataset_folder, 'train')
 
     align_images(test_a_file_paths, test_b_file_paths, test_path)

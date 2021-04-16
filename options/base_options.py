@@ -6,7 +6,7 @@ import models
 import data
 
 
-class BaseOptions():
+class BaseOptions:
     """This class defines options used during both training and test time.
 
     It also implements several helper functions such as parsing, printing, and saving the options.
